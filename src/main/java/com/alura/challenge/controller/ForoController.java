@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/temas")
 public class ForoController{
-
+//* probando
     @PostMapping
     public void registarTema(@RequestBody DatoRegistroTema datoRegistroTema ){
 
