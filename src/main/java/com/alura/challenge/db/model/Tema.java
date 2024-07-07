@@ -21,8 +21,10 @@ public class Tema{
     @Column( name = "idTema" )
     private Long idTema;
 
+    @Column( unique = true, length = 200 )
     private String titulo;
 
+    @Column( unique = true, length = 400 )
     private String mensaje;
 
     @Column( name = "fecha_creacion" )
@@ -34,6 +36,4 @@ public class Tema{
     private String autor;
 
     private String curso;
-
-
 }
