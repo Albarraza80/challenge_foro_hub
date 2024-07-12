@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record DatoRegistroTema(
 
     @NotBlank
-    Long idUsuario,
+    String idUsuario,
 
     @NotBlank
     String mensaje,
