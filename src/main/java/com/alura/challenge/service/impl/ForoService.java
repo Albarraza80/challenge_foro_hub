@@ -1,16 +1,15 @@
-package com.alura.challenge.service;
+package com.alura.challenge.service.impl;
 
 import com.alura.challenge.db.model.Tema;
 import com.alura.challenge.db.repository.TemaRepository;
 import com.alura.challenge.model.DatoRegistroTema;
 import com.alura.challenge.model.DatosTema;
+import com.alura.challenge.service.IForoService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ForoService implements IForoService{
@@ -23,24 +22,22 @@ public class ForoService implements IForoService{
     }
 
     @Override
-    public void crearTema( DatoRegistroTema datoRegistroTema ){
-        this.temaRepository.save( new Tema( datoRegistroTema ) );
+    public DatosTema crearTema( DatoRegistroTema datoRegistroTema ){
+        var tema = this.temaRepository.save( new Tema( datoRegistroTema ) );
+
+        return new DatosTema( tema );
     }
 
     @Override
     @Transactional
-    public void actualizarTema( DatosTema datosTema ){
-        Optional<Tema> opcionalTema;
-
+    public DatosTema actualizarTema( DatosTema datosTema ){
         Tema tema;
 
-        opcionalTema = this.temaRepository.findById( datosTema.idTema() );
+        tema = this.temaRepository.getReferenceById( datosTema.idTema() );
 
-        if( opcionalTema.isPresent() ){
-            tema = opcionalTema.get();
+        tema.actualizarTema( datosTema );
 
-            tema.actualizarTema( datosTema );
-        }
+        return new DatosTema( tema );
     }
 
     @Override
@@ -50,32 +47,20 @@ public class ForoService implements IForoService{
 
     @Override
     public DatosTema muestraUnTema( Long id ){
-        Optional<Tema> opcionalTema;
         Tema tema;
 
-       opcionalTema =  this.temaRepository.findById( id );
+        tema = this.temaRepository.getReferenceById( id );
 
-        if( opcionalTema.isPresent() ){
-            tema = opcionalTema.get();
-
-            return new DatosTema( tema );
-        }
-
-        return null;
+        return new DatosTema( tema );
     }
 
     @Override
     public void eliminaUnTema( Long id ){
-
-        Optional<Tema> opcionalTema;
         Tema tema;
 
-        opcionalTema =  this.temaRepository.findById( id );
+        tema = this.temaRepository.getReferenceById( id );
 
-        if( opcionalTema.isPresent() ){
-            tema = opcionalTema.get();
-            this.temaRepository.delete( tema );
-        }
+        this.temaRepository.delete( tema );
     }
 
 }

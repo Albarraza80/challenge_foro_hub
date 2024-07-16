@@ -6,9 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface IForoService{
-    void crearTema( DatoRegistroTema datoRegistroTema );
+    DatosTema crearTema( DatoRegistroTema datoRegistroTema );
 
-    void actualizarTema( DatosTema datosTema );
+    DatosTema actualizarTema( DatosTema datosTema );
 
     Page<DatosTema> listarTemas( Pageable pageable );
 

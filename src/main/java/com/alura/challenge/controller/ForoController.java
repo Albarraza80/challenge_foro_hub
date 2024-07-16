@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping( "/temas" )
@@ -29,31 +34,40 @@ public class ForoController{
     }
 
     @PostMapping
-    public void registarTema( @RequestBody @Valid DatoRegistroTema datoRegistroTema ){
-        this.foroService.crearTema( datoRegistroTema );
+    public ResponseEntity<DatosTema> registarTema( @RequestBody @Valid DatoRegistroTema datoRegistroTema,
+                                                   UriComponentsBuilder uriComponentsBuilder ){
+        URI url;
+
+        var datosTema = this.foroService.crearTema( datoRegistroTema );
+
+        url = uriComponentsBuilder.path( "/temas/{idTema}" ).buildAndExpand( datosTema.idTema() ).toUri();
+
+        return ResponseEntity.created( url ).body( datosTema );
     }
 
     @GetMapping
-    public Page<DatosTema> datosTemaList( @PageableDefault( size = 3 ) Pageable pageable ){
-        return this.foroService.listarTemas( pageable );
+    public ResponseEntity<Page<DatosTema>> datosTemaList( @PageableDefault( size = 3 ) Pageable pageable ){
+        return ResponseEntity.ok( this.foroService.listarTemas( pageable ) );
     }
 
     @PutMapping( "{id}" )
-    public void actualizarTema( @PathVariable Long id, @RequestBody DatosTema datosTema ){
+    public ResponseEntity<DatosTema> actualizarTema( @PathVariable Long id, @RequestBody DatosTema datosTema ){
         DatosTema datosTemaAux;
 
         datosTemaAux = datosTema.setIdTema( id );
 
-        this.foroService.actualizarTema( datosTemaAux );
+        return ResponseEntity.ok( this.foroService.actualizarTema( datosTemaAux ) );
     }
 
     @GetMapping( "{id}" )
-    public DatosTema muestraUnTema( @PathVariable Long id ){
-        return this.foroService.muestraUnTema( id );
+    public ResponseEntity<DatosTema> muestraUnTema( @PathVariable Long id ){
+        return ResponseEntity.ok( this.foroService.muestraUnTema( id ) );
     }
 
     @DeleteMapping( "{id}" )
-    public void eliminaUnTema( @PathVariable Long id ){
+    public ResponseEntity eliminaUnTema( @PathVariable Long id ){
         this.foroService.eliminaUnTema( id );
+
+        return ResponseEntity.noContent().build();
     }
 }

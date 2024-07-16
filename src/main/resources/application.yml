@@ -10,3 +10,9 @@ spring:
   properties:
     hibernate:
       format_sql: true
+server:
+  error:
+    include-stacktrace: never
+api:
+  security:
+    secret: 11jun1999
